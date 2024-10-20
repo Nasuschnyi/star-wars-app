@@ -45,9 +45,9 @@ export default function HomePage() {
 			) : (
 				<ul>
 					{/* Render a list of heroes, each clickable to show details */}
-					{heroes.map((hero) => (
+					{heroes.map((hero, index) => (
 						<li
-							key={hero.id}
+							key={index}
 							onClick={() => setSelectedHero(hero)}
 						>
 							{hero.name}
