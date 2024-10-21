@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import HeroDetailGraph from './HeroDetailGraph';
 import { fetchHeroes } from '../services/starWarsApi';
+import Image from 'next/image';
 
 const HeroList: React.FC = () => {
 	const [heroes, setHeroes] = useState<any[]>([]); // State to store heroes list
@@ -63,6 +64,14 @@ const HeroList: React.FC = () => {
 							key={index}
 							onClick={() => setSelectedHero(hero)}
 						>
+							<Image
+								src={`https://starwars-visualguide.com/assets/img/characters/${hero.id}.jpg`}
+								alt={hero.name}
+								width={100}
+								height={150}
+								style={{ marginRight: '10px' }}
+								priority
+							/>
 							{hero.name}
 						</li>
 					))}
