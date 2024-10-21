@@ -1,83 +1,94 @@
 'use client';
-import { Hero } from '../types/starWarsTypes';
 import { useState, useEffect } from 'react';
 import HeroDetailGraph from './HeroDetailGraph';
-import { fetchHeroes, fetchHeroDetails } from '../services/starWarsApi';
+import { fetchHeroes } from '../services/starWarsApi';
 
 const HeroList: React.FC = () => {
-	const [heroes, setHeroes] = useState<Hero[]>([]);
-	const [selectedHero, setSelectedHero] = useState<Hero | null>(null);
-	const [heroDetail, setHeroDetail] = useState<any>(null);
-	const [page, setPage] = useState(1); // Track the page for infinite scroll
-	const [loading, setLoading] = useState(false);
-	const [hasMore, setHasMore] = useState(true); // To track if there's more data
+	const [heroes, setHeroes] = useState<any[]>([]); // State to store heroes list
+	const [loading, setLoading] = useState(false); // State to manage loading status
+	const [hasMore, setHasMore] = useState(true); // State to check if there are more heroes to load
+	const [selectedHero, setSelectedHero] = useState<any | null>(null); // State to manage the selected hero for details
+	const [page, setPage] = useState(1); // State for current page in pagination
 
-	// Function to handle hero click and fetch its details
-	const handleHeroClick = async (hero: Hero) => {
-		setSelectedHero(hero);
-		const details = await fetchHeroDetails(hero.id); // Fetch hero details by ID
-		setHeroDetail(details); // Store the details
-	};
+	// Function to load heroes for the current page
+	const loadHeroes = async () => {
+		if (loading || !hasMore) return; // Exit if already loading or no more heroes to load
 
-	// Fetch heroes when page changes or when the component mounts
-	const fetchHeroList = async () => {
-		if (loading) return; // Prevent multiple fetches while loading
-		setLoading(true);
+		setLoading(true); // Set loading status to true
 		try {
-			const newHeroes = await fetchHeroes(page);
-			if (newHeroes.length > 0) {
-				setHeroes((prev) => [...prev, ...newHeroes]); // Append new heroes to the list
-			} else {
-				setHasMore(false); // No more heroes available
+			const newHeroes = await fetchHeroes(page); // Fetch heroes for the current page
+
+			// Check if newHeroes is an array
+			if (!Array.isArray(newHeroes)) {
+				console.error('Error: newHeroes is not an array');
+				setHasMore(false); // Stop pagination if no valid data
+				return;
 			}
-		} catch (error: any) {
-			console.error('Failed to fetch heroes:', error.message);
+
+			setHeroes((prevHeroes) => {
+				if (newHeroes.length === 0) {
+					setHasMore(false); // If no new heroes, stop pagination
+					return prevHeroes;
+				}
+				return [...prevHeroes, ...newHeroes]; // Append new heroes to the list
+			});
+		} catch (error) {
+			console.error('Error loading heroes:', error); // Handle errors
 		} finally {
-			setLoading(false);
+			setLoading(false); // Stop loading
 		}
 	};
 
-	// Trigger fetching when component mounts and on page change
+	// Trigger loadHeroes on page change
 	useEffect(() => {
-		fetchHeroList();
+		loadHeroes();
 	}, [page]);
 
-	// Handle infinite scroll logic
-	const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
-		const target = event.target as HTMLDivElement; // Cast event.target to HTMLDivElement
-		const bottom =
-			target.scrollHeight === target.scrollTop + target.clientHeight;
-		if (bottom && hasMore && !loading) {
-			setPage((prev) => prev + 1); // Increment page when user scrolls to the bottom
-		}
+	// Function to handle load more button click
+	const handleLoadMore = () => {
+		setPage((prevPage) => prevPage + 1); // Load more heroes by incrementing the page
 	};
 
-	if (heroes.length === 0) {
-		return <p>Loading heroes...</p>;
-	}
-
 	return (
-		<div
-			style={{ maxHeight: '500px', overflowY: 'auto' }}
-			onScroll={handleScroll} // Attach scroll handler
-		>
-			<ul>
-				{heroes.map((hero) => (
-					<li
-						key={hero.id}
-						onClick={() => handleHeroClick(hero)}
-						style={{ cursor: 'pointer', margin: '10px 0' }}
-					>
-						{hero.name}
-					</li>
-				))}
-			</ul>
-			{loading && <p>Loading more heroes...</p>}
-			{/* Pass hero details correctly */}
-			{selectedHero && heroDetail && (
-				<HeroDetailGraph heroId={selectedHero.id} />
+		<>
+			<h1>Star Wars Heroes</h1>
+			{/* Render loading message if no heroes have been loaded yet */}
+			{heroes.length === 0 ? (
+				<p>Loading heroes...</p>
+			) : (
+				<ul>
+					{/* Render a list of heroes, each clickable to show details */}
+					{heroes.map((hero, index) => (
+						<li
+							key={index}
+							onClick={() => setSelectedHero(hero)}
+						>
+							{hero.name}
+						</li>
+					))}
+				</ul>
 			)}
-		</div>
+			{loading && <p>Loading more heroes...</p>}
+			{!hasMore && <p>No more heroes to load</p>}
+
+			{/* Button to load more heroes */}
+			<div style={{ marginTop: '20px' }}>
+				<button
+					onClick={handleLoadMore}
+					disabled={!hasMore || loading}
+				>
+					Load More
+				</button>
+			</div>
+
+			{/* Render hero details graph when a hero is selected */}
+			{selectedHero && (
+				<div>
+					<h2>Hero Details</h2>
+					<HeroDetailGraph heroId={selectedHero.id} />
+				</div>
+			)}
+		</>
 	);
 };
 
