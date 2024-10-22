@@ -4,7 +4,9 @@ import HeroDetailGraph from './HeroDetailGraph';
 import { fetchHeroes } from '../services/starWarsApi';
 import Image from 'next/image';
 
+// Define the HeroList component
 const HeroList: React.FC = () => {
+	// Initialize state variables
 	const [heroes, setHeroes] = useState<any[]>([]); // State to store heroes list
 	const [loading, setLoading] = useState(false); // State to manage loading status
 	const [hasMore, setHasMore] = useState(true); // State to check if there are more heroes to load
@@ -13,11 +15,15 @@ const HeroList: React.FC = () => {
 
 	// Function to load heroes for the current page
 	const loadHeroes = async () => {
-		if (loading || !hasMore) return; // Exit if already loading or no more heroes to load
+		// Check if already loading or no more heroes to load
+		if (loading || !hasMore) return;
 
-		setLoading(true); // Set loading status to true
+		// Set loading status to true
+		setLoading(true);
+
 		try {
-			const newHeroes = await fetchHeroes(page); // Fetch heroes for the current page
+			// Fetch heroes for the current page
+			const newHeroes = await fetchHeroes(page);
 
 			// Check if newHeroes is an array
 			if (!Array.isArray(newHeroes)) {
@@ -26,12 +32,21 @@ const HeroList: React.FC = () => {
 				return;
 			}
 
+			// Update the heroes list
 			setHeroes((prevHeroes) => {
-				if (newHeroes.length === 0) {
-					setHasMore(false); // If no new heroes, stop pagination
-					return prevHeroes;
-				}
-				return [...prevHeroes, ...newHeroes]; // Append new heroes to the list
+				const updatedHeroes = [...prevHeroes];
+
+				// Check if each new hero already exists in the list
+				newHeroes.forEach((hero) => {
+					const existingHeroIndex = updatedHeroes.findIndex(
+						(h) => h.id === hero.id
+					);
+					if (existingHeroIndex === -1) {
+						updatedHeroes.push(hero);
+					}
+				});
+
+				return updatedHeroes;
 			});
 		} catch (error) {
 			console.error('Error loading heroes:', error); // Handle errors
@@ -51,6 +66,7 @@ const HeroList: React.FC = () => {
 	};
 
 	return (
+		// Render the hero list component
 		<>
 			<h1>Star Wars Heroes</h1>
 			{/* Render loading message if no heroes have been loaded yet */}
