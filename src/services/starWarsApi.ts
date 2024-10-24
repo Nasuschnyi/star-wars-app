@@ -1,14 +1,22 @@
+// Base URL for the Star Wars API
 const API_BASE_URL = 'https://sw-api.starnavi.io';
+
+// General function to check the response from the API
+const checkResponse = async (response: Response, resourceName: string) => {
+	if (!response.ok) {
+		throw new Error(`${resourceName} not found: ${response.statusText}`);
+	}
+	return await response.json();
+};
 
 // Fetches a list of heroes with pagination support
 export const fetchHeroes = async (page: number, pageSize: number = 10) => {
 	try {
-		// API call to fetch heroes with pagination
 		const response = await fetch(
-			`https://sw-api.starnavi.io/people/?page=${page}&page_size=${pageSize}`
+			`${API_BASE_URL}/people/?page=${page}&page_size=${pageSize}`
 		);
-		const data = await response.json();
-		return data.results; // Returns array of heroes
+		const data = await checkResponse(response, 'Heroes');
+		return data.results || []; // Ensure only the heroes array is returned
 	} catch (error) {
 		console.error('Error fetching heroes:', error);
 		return [];
@@ -18,12 +26,8 @@ export const fetchHeroes = async (page: number, pageSize: number = 10) => {
 // Fetches detailed information for a specific hero
 export const fetchHeroDetails = async (heroId: number) => {
 	try {
-		// API call to fetch hero details by heroId
-		const response = await fetch(
-			`https://sw-api.starnavi.io/people/${heroId}/`
-		);
-		const data = await response.json();
-		return data;
+		const response = await fetch(`${API_BASE_URL}/people/${heroId}/`);
+		return await checkResponse(response, `Hero ${heroId}`);
 	} catch (error) {
 		console.error(`Error fetching details for hero ${heroId}:`, error);
 		throw new Error(`Failed to fetch details for hero ${heroId}`);
@@ -31,28 +35,45 @@ export const fetchHeroDetails = async (heroId: number) => {
 };
 
 // Fetch film data
-const fetchFilm = async (filmId: number) => {
-	const response = await fetch(`${API_BASE_URL}/films/${filmId}`);
-	if (!response.ok) {
-		throw new Error(`Film with ID ${filmId} not found`);
+export const fetchFilm = async (filmId: number) => {
+	try {
+		const response = await fetch(`${API_BASE_URL}/films/${filmId}`);
+		return await checkResponse(response, `Film ${filmId}`);
+	} catch (error) {
+		console.error(`Error fetching film with ID ${filmId}:`, error);
+		throw error;
 	}
-	return await response.json();
 };
 
-// Fetch starship data
-const fetchStarship = async (starshipId: number) => {
-	const response = await fetch(`${API_BASE_URL}/starships/${starshipId}`);
-	if (!response.ok) {
-		throw new Error(`Starship with ID ${starshipId} not found`);
+/* export async function fetchFilm(id: number) {
+	try {
+		const response = await fetch(`https://swapi.dev/api/films/${id}`);
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error(`Error fetching film with ID ${id}:`, error);
+		throw error;
 	}
-	return await response.json();
+} */
+
+// Fetch starship data
+export const fetchStarship = async (starshipId: number) => {
+	try {
+		const response = await fetch(`${API_BASE_URL}/starships/${starshipId}`);
+		return await checkResponse(response, `Starship ${starshipId}`);
+	} catch (error) {
+		console.error(`Error fetching starship with ID ${starshipId}:`, error);
+		throw error;
+	}
 };
 
 // Fetch vehicle data
-const fetchVehicle = async (vehicleId: number) => {
-	const response = await fetch(`${API_BASE_URL}/vehicles/${vehicleId}`);
-	if (!response.ok) {
-		throw new Error(`Vehicle with ID ${vehicleId} not found`);
+export const fetchVehicle = async (vehicleId: number) => {
+	try {
+		const response = await fetch(`${API_BASE_URL}/vehicles/${vehicleId}`);
+		return await checkResponse(response, `Vehicle ${vehicleId}`);
+	} catch (error) {
+		console.error(`Error fetching vehicle with ID ${vehicleId}:`, error);
+		throw error;
 	}
-	return await response.json();
 };

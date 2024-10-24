@@ -1,0 +1,27 @@
+$breakpoint: (
+	'xl': 1400px,
+	//desktop
+	'lg': 1100px,
+	//laptop
+	'md': 768px,
+	//tablet
+	'sm': 400px,
+	//mobile
+);
+
+$color: (
+	'gray-X11': #bebebe,
+	'onyx': #373737,
+	'black': #000000,
+	'white': #ffffff,
+);
+
+%transition {
+	transition: all 0.35s ease-in-out;
+}
+
+%flex {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
