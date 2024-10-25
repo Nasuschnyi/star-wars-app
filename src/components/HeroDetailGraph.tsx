@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import ReactFlow, { MiniMap, Controls, Node, Edge } from 'reactflow';
 import 'reactflow/dist/style.css';
 import Image from 'next/image';
@@ -12,6 +12,7 @@ import {
 interface HeroDetailGraphProps {
 	heroId: number;
 }
+
 // Component to render hero details in a graph using React Flow
 const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 	// Initialize state for nodes and edges
@@ -25,7 +26,7 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 				// Fetch hero details based on heroId
 				const hero = await fetchHeroDetails(heroId);
 
-				// Create nodes and edges for the hero and related entities
+				// Create hero node with image and details
 				const heroImage = (
 					<div style={{ display: 'flex', alignItems: 'center' }}>
 						<Image
@@ -35,6 +36,12 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 							height={150}
 							style={{ marginRight: '10px' }}
 							priority
+							unoptimized
+							onError={({ currentTarget }) => {
+								currentTarget.onerror = null; // Prevents infinite loop
+								currentTarget.src =
+									'https://starwars-visualguide.com/assets/img/big-placeholder.jpg'; // Fallback image
+							}}
 						/>
 						<ul>
 							<li>{`Name: ${hero.name}`}</li>
@@ -49,15 +56,14 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 					</div>
 				);
 
-				// Create a node for the hero
 				const heroNode: Node = {
 					id: `hero-${hero.id}`,
 					data: { label: heroImage },
 					position: { x: 250, y: 0 },
-					style: { whiteSpace: 'pre-wrap' },
+					style: { whiteSpace: 'pre-wrap', width: 'fit-content' },
 				};
 
-				// Create nodes for films the hero appears in
+				// Create film nodes
 				const filmNodes: Node[] = await Promise.all(
 					hero.films.map(async (filmId: number, index: number) => {
 						const film = await fetchFilm(filmId);
@@ -66,6 +72,7 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 								style={{
 									display: 'flex',
 									alignItems: 'center',
+									flexDirection: 'column',
 								}}
 							>
 								<Image
@@ -73,8 +80,13 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 									alt={film.title}
 									width={100}
 									height={150}
-									style={{ marginRight: '10px' }}
 									priority
+									unoptimized
+									onError={({ currentTarget }) => {
+										currentTarget.onerror = null; // Prevent infinite loop
+										currentTarget.src =
+											'https://starwars-visualguide.com/assets/img/big-placeholder.jpg';
+									}}
 								/>
 								<p>{film.title}</p>
 							</div>
@@ -83,11 +95,12 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 							id: `film-${filmId}`,
 							data: { label: filmImage },
 							position: { x: 150 * (index + 1), y: 150 },
+							style: { width: 'fit-content' },
 						};
 					})
 				);
 
-				// Create nodes for starships the hero traveled in
+				// Create starship nodes
 				const starshipNodes: Node[] = await Promise.all(
 					hero.starships.map(
 						async (starshipId: number, index: number) => {
@@ -97,6 +110,7 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 									style={{
 										display: 'flex',
 										alignItems: 'center',
+										flexDirection: 'column',
 									}}
 								>
 									<Image
@@ -104,8 +118,12 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 										alt={starship.name}
 										width={100}
 										height={150}
-										style={{ marginRight: '10px' }}
-										priority
+										unoptimized
+										onError={({ currentTarget }) => {
+											currentTarget.onerror = null;
+											currentTarget.src =
+												'https://starwars-visualguide.com/assets/img/big-placeholder.jpg';
+										}}
 									/>
 									<p>{starship.name}</p>
 								</div>
@@ -114,19 +132,19 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 								id: `starship-${starshipId}`,
 								data: { label: starshipImage },
 								position: { x: 100 * (index + 1), y: 300 },
+								style: { width: 'fit-content' },
 							};
 						}
 					)
 				);
 
-				// Create edges from hero to films
+				// Create edges
 				const filmEdges: Edge[] = hero.films.map((filmId: number) => ({
 					id: `edge-hero-${hero.id}-film-${filmId}`,
 					source: `hero-${hero.id}`,
 					target: `film-${filmId}`,
 				}));
 
-				// Create edges from films to starships
 				const starshipEdges: Edge[] = hero.starships.map(
 					(starshipId: number) => ({
 						id: `edge-film-${hero.films[0]}-starship-${starshipId}`,
@@ -135,7 +153,7 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 					})
 				);
 
-				// Set nodes and edges in state
+				// Set nodes and edges
 				setNodes([heroNode, ...filmNodes, ...starshipNodes]);
 				setEdges([...filmEdges, ...starshipEdges]);
 			} catch (error) {
@@ -143,7 +161,7 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 			}
 		};
 
-		fetchData(); // Trigger fetch on mount or heroId change
+		fetchData();
 	}, [heroId]);
 
 	return (
