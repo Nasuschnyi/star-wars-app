@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import HeroDetailGraph from '../../../components/HeroDetailGraph';
 import { fetchHeroDetails } from '../../../services/starWarsApi';
