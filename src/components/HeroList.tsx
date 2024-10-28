@@ -3,14 +3,15 @@ import { useState, useEffect } from 'react';
 import HeroDetailGraph from './HeroDetailGraph';
 import { fetchHeroes } from '../services/starWarsApi';
 import Image from 'next/image';
+import { Hero } from '@/types/starWarsTypes';
 
 // Define the HeroList component
 const HeroList: React.FC = () => {
 	// Initialize state variables
-	const [heroes, setHeroes] = useState<any[]>([]); // State to store heroes list
+	const [heroes, setHeroes] = useState<Hero[]>([]); // State to store heroes list
 	const [loading, setLoading] = useState(false); // State to manage loading status
 	const [hasMore, setHasMore] = useState(true); // State to check if there are more heroes to load
-	const [selectedHero, setSelectedHero] = useState<any | null>(null); // State to manage the selected hero for details
+	const [selectedHero, setSelectedHero] = useState<Hero | null>(null); // State to manage the selected hero for details
 	const [page, setPage] = useState(1); // State for current page in pagination
 
 	// Function to load heroes for the current page
