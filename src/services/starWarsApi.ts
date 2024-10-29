@@ -10,7 +10,7 @@ const checkResponse = async (response: Response, resourceName: string) => {
 };
 
 // Fetches a list of heroes with pagination support
-export const fetchHeroes = async (page: number, pageSize: number = 10) => {
+export const fetchHeroes = async (page: number = 1, pageSize: number = 10) => {
 	try {
 		const response = await fetch(
 			`${API_BASE_URL}/people/?page=${page}&page_size=${pageSize}`
@@ -43,8 +43,8 @@ export const fetchHeroDetails = async (heroId: number) => {
 		console.error(`Error fetching film with ID ${filmId}:`, error);
 		throw error;
 	}
-};
- */
+}; */
+
 export async function fetchFilm(id: number) {
 	try {
 		const response = await fetch(`https://swapi.dev/api/films/${id}`);

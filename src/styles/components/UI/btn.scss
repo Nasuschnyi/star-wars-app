@@ -1,0 +1,13 @@
+@import '../../variables';
+
+.btn {
+	@extend %flex;
+	width: 3rem;
+	height: 3rem;
+	border-radius: 50%;
+	border: 0.1875rem solid map-get($color, 'gray-X11');
+	font-size: 1.75rem;
+	padding: 0;
+	margin: 0 auto;
+	cursor: pointer;
+}

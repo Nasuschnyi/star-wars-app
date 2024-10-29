@@ -33,24 +33,27 @@ const HeroList: React.FC = () => {
 				return;
 			}
 
-			// Update the heroes list
-			setHeroes((prevHeroes) => {
-				const updatedHeroes = [...prevHeroes];
+			// If there are no more heroes, update hasMore to false
+			if (newHeroes.length === 0) {
+				setHasMore(false);
+			} else {
+				// Update the heroes list
+				setHeroes((prevHeroes) => {
+					const updatedHeroes = [...prevHeroes];
 
-				// Check if each new hero already exists in the list
-				newHeroes.forEach((hero) => {
-					const existingHeroIndex = updatedHeroes.findIndex(
-						(h) => h.id === hero.id
-					);
-					if (existingHeroIndex === -1) {
-						updatedHeroes.push(hero);
-					}
+					// Add only new heroes that don't already exist in the list
+					newHeroes.forEach((hero) => {
+						if (!updatedHeroes.some((h) => h.id === hero.id)) {
+							updatedHeroes.push(hero);
+						}
+					});
+
+					return updatedHeroes;
 				});
-
-				return updatedHeroes;
-			});
+			}
 		} catch (error) {
 			console.error('Error loading heroes:', error); // Handle errors
+			setHasMore(false); // Disable further loading if there's an error
 		} finally {
 			setLoading(false); // Stop loading
 		}
@@ -68,28 +71,32 @@ const HeroList: React.FC = () => {
 
 	return (
 		// Render the hero list component
-		<>
-			<h1>Star Wars Heroes</h1>
+		<main className="hero">
+			<h1 className="title">Star Wars Heroes</h1>
 			{/* Render loading message if no heroes have been loaded yet */}
 			{heroes.length === 0 ? (
 				<p>Loading heroes...</p>
 			) : (
-				<ul>
+				<ul className="hero-list">
 					{/* Render a list of heroes, each clickable to show details */}
-					{heroes.map((hero, index) => (
+					{heroes.map((hero, id) => (
 						<li
-							key={index}
+							className="hero-item"
+							key={id}
 							onClick={() => setSelectedHero(hero)}
 						>
-							<Image
-								src={`https://starwars-visualguide.com/assets/img/characters/${hero.id}.jpg`}
-								alt={hero.name}
-								width={100}
-								height={150}
-								style={{ marginRight: '10px' }}
-								priority
-							/>
-							{hero.name}
+							<figure className="hero-image">
+								<Image
+									src={`https://starwars-visualguide.com/assets/img/characters/${hero.id}.jpg`}
+									alt={hero.name}
+									width={250}
+									height={350}
+									priority
+								/>
+								<figcaption className="hero-name">
+									{hero.name}
+								</figcaption>
+							</figure>
 						</li>
 					))}
 				</ul>
@@ -98,14 +105,13 @@ const HeroList: React.FC = () => {
 			{!hasMore && <p>No more heroes to load</p>}
 
 			{/* Button to load more heroes */}
-			<div style={{ marginTop: '20px' }}>
-				<button
-					onClick={handleLoadMore}
-					disabled={!hasMore || loading}
-				>
-					Load More
-				</button>
-			</div>
+			<button
+				className="btn"
+				onClick={handleLoadMore}
+				disabled={!hasMore || loading}
+			>
+				+
+			</button>
 
 			{/* Render hero details graph when a hero is selected */}
 			{selectedHero && (
@@ -114,7 +120,7 @@ const HeroList: React.FC = () => {
 					<HeroDetailGraph heroId={selectedHero.id} />
 				</div>
 			)}
-		</>
+		</main>
 	);
 };
 
