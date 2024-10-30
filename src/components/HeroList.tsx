@@ -75,7 +75,7 @@ const HeroList: React.FC = () => {
 			<h1 className="title">Star Wars Heroes</h1>
 			{/* Render loading message if no heroes have been loaded yet */}
 			{heroes.length === 0 ? (
-				<p>Loading heroes...</p>
+				<p className="loading">Loading heroes...</p>
 			) : (
 				<ul className="hero-list">
 					{/* Render a list of heroes, each clickable to show details */}
@@ -101,8 +101,10 @@ const HeroList: React.FC = () => {
 					))}
 				</ul>
 			)}
-			{loading && <p>Loading more heroes...</p>}
-			{!hasMore && <p>No more heroes to load</p>}
+			{loading && <p className="loading">Loading more heroes...</p>}
+			{!hasMore && (
+				<p className="loading no-more">No more heroes to load</p>
+			)}
 
 			{/* Button to load more heroes */}
 			<button
@@ -110,7 +112,7 @@ const HeroList: React.FC = () => {
 				onClick={handleLoadMore}
 				disabled={!hasMore || loading}
 			>
-				+
+				load more
 			</button>
 
 			{/* Render hero details graph when a hero is selected */}

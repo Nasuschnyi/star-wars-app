@@ -1,0 +1,12 @@
+@import '../../variables';
+
+.loading {
+	text-align: center;
+	font-size: clamp(1rem, 2vw, 1.5rem);
+	color: map-get($color, 'gray-X11');
+	line-height: 2;
+
+	&.no-more {
+		color: map-get($color, 'onyx');
+	}
+}
