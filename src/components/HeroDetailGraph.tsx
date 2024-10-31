@@ -29,13 +29,12 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 
 				// Create hero node with image and details
 				const heroImage = (
-					<div style={{ display: 'flex', alignItems: 'center' }}>
+					<figure className="hero-details-image">
 						<Image
 							src={`https://starwars-visualguide.com/assets/img/characters/${heroId}.jpg`}
 							alt={hero.name}
 							width={100}
 							height={150}
-							style={{ marginRight: '10px' }}
 							priority
 							unoptimized
 							onError={({ currentTarget }) => {
@@ -44,7 +43,7 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 									'https://starwars-visualguide.com/assets/img/big-placeholder.jpg'; // Fallback image
 							}}
 						/>
-						<ul>
+						<ul className="hero-details-list">
 							<li>{`Name: ${hero.name}`}</li>
 							<li>{`Birth Year: ${hero.birth_year}`}</li>
 							<li>{`Gender: ${hero.gender}`}</li>
@@ -54,7 +53,7 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 							<li>{`Eye Color: ${hero.eye_color}`}</li>
 							<li>{`Skin Color: ${hero.skin_color}`}</li>
 						</ul>
-					</div>
+					</figure>
 				);
 
 				const heroNode: Node = {
@@ -166,15 +165,22 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 	}, [heroId]);
 
 	return (
-		<div style={{ height: 400 }}>
+		<article className="hero-details-graph">
 			<ReactFlow
 				nodes={nodes}
 				edges={edges}
+				style={{ cursor: 'grab' }}
 			>
-				<MiniMap />
+				<MiniMap
+					maskColor={'#bebebe'}
+					nodeStrokeColor={'#ece7e1'}
+					nodeColor={'#373737'}
+					pannable
+					zoomable
+				/>
 				<Controls />
 			</ReactFlow>
-		</div>
+		</article>
 	);
 };
 

@@ -4,9 +4,23 @@
 	@extend %flex;
 	padding: 0.5rem 1rem;
 	border-radius: 0.75rem;
-	font-size: 1.25rem;
+	font-weight: 600;
+	font-size: 1rem;
 	line-height: 2;
 	text-transform: uppercase;
 	margin: 0 auto;
 	cursor: pointer;
+	@extend %transition;
+
+	&.reset {
+		position: fixed;
+		top: 2rem;
+		right: 2rem;
+		font-size: 1rem;
+		z-index: 1000;
+
+		&:hover {
+			color: map-get($color, 'candy-apple-red');
+		}
+	}
 }

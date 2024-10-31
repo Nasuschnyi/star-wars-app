@@ -5,10 +5,12 @@
 		"homeworld",
 		"hyperdrive",
 		"MGLT",
+		"pannable",
 		"reactflow",
 		"starships",
 		"starwars",
 		"unoptimized",
-		"visualguide"
+		"visualguide",
+		"zoomable"
 	]
 }

@@ -69,6 +69,11 @@ const HeroList: React.FC = () => {
 		setPage((prevPage) => prevPage + 1); // Load more heroes by incrementing the page
 	};
 
+	// Function to reset the selected hero
+	const resetSelectedHero = () => {
+		setSelectedHero(null);
+	};
+
 	return (
 		// Render the hero list component
 		<main className="hero">
@@ -89,8 +94,8 @@ const HeroList: React.FC = () => {
 								<Image
 									src={`https://starwars-visualguide.com/assets/img/characters/${hero.id}.jpg`}
 									alt={hero.name}
-									width={250}
-									height={350}
+									width={240}
+									height={330}
 									priority
 								/>
 								<figcaption className="hero-name">
@@ -117,10 +122,15 @@ const HeroList: React.FC = () => {
 
 			{/* Render hero details graph when a hero is selected */}
 			{selectedHero && (
-				<div>
-					<h2>Hero Details</h2>
+				<section className="hero-details">
+					<button
+						className="btn reset"
+						onClick={resetSelectedHero}
+					>
+						&#10005;
+					</button>
 					<HeroDetailGraph heroId={selectedHero.id} />
-				</div>
+				</section>
 			)}
 		</main>
 	);
