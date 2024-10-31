@@ -90,8 +90,9 @@ const HeroList: React.FC = () => {
 							key={id}
 							onClick={() => setSelectedHero(hero)}
 						>
-							<figure className="hero-image">
+							<figure className="hero-figure">
 								<Image
+									className="hero-image"
 									src={`https://starwars-visualguide.com/assets/img/characters/${hero.id}.jpg`}
 									alt={hero.name}
 									width={240}

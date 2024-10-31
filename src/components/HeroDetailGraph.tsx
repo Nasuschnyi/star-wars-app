@@ -33,8 +33,8 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 						<Image
 							src={`https://starwars-visualguide.com/assets/img/characters/${heroId}.jpg`}
 							alt={hero.name}
-							width={100}
-							height={150}
+							width={120}
+							height={165}
 							priority
 							unoptimized
 							onError={({ currentTarget }) => {
@@ -44,7 +44,9 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 							}}
 						/>
 						<ul className="hero-details-list">
-							<li>{`Name: ${hero.name}`}</li>
+							<li>
+								<strong>{hero.name}</strong>
+							</li>
 							<li>{`Birth Year: ${hero.birth_year}`}</li>
 							<li>{`Gender: ${hero.gender}`}</li>
 							<li>{`Height: ${hero.height} cm`}</li>
@@ -59,7 +61,7 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 				const heroNode: Node = {
 					id: `hero-${hero.id}`,
 					data: { label: heroImage },
-					position: { x: 250, y: 0 },
+					position: { x: 0, y: 0 },
 					style: { whiteSpace: 'pre-wrap', width: 'fit-content' },
 				};
 
@@ -68,18 +70,12 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 					hero.films.map(async (filmId: number, index: number) => {
 						const film = await fetchFilm(filmId);
 						const filmImage = (
-							<div
-								style={{
-									display: 'flex',
-									alignItems: 'center',
-									flexDirection: 'column',
-								}}
-							>
+							<figure className="hero-details-image content">
 								<Image
 									src={`https://starwars-visualguide.com/assets/img/films/${filmId}.jpg`}
 									alt={film.title}
-									width={100}
-									height={150}
+									width={120}
+									height={165}
 									priority
 									unoptimized
 									onError={({ currentTarget }) => {
@@ -88,13 +84,15 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 											'https://starwars-visualguide.com/assets/img/big-placeholder.jpg';
 									}}
 								/>
-								<p>{film.title}</p>
-							</div>
+								<figcaption className="content-caption">
+									{film.title}
+								</figcaption>
+							</figure>
 						);
 						return {
 							id: `film-${filmId}`,
 							data: { label: filmImage },
-							position: { x: 150 * (index + 1), y: 150 },
+							position: { x: 200 * (index + 0.5), y: 200 },
 							style: { width: 'fit-content' },
 						};
 					})
@@ -106,18 +104,12 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 						async (starshipId: number, index: number) => {
 							const starship = await fetchStarship(starshipId);
 							const starshipImage = (
-								<div
-									style={{
-										display: 'flex',
-										alignItems: 'center',
-										flexDirection: 'column',
-									}}
-								>
+								<figure className="hero-details-image content">
 									<Image
 										src={`https://starwars-visualguide.com/assets/img/starships/${starshipId}.jpg`}
 										alt={starship.name}
-										width={100}
-										height={150}
+										width={120}
+										height={165}
 										unoptimized
 										onError={({ currentTarget }) => {
 											currentTarget.onerror = null;
@@ -125,13 +117,15 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 												'https://starwars-visualguide.com/assets/img/big-placeholder.jpg';
 										}}
 									/>
-									<p>{starship.name}</p>
-								</div>
+									<figcaption className="content-caption">
+										{starship.name}
+									</figcaption>
+								</figure>
 							);
 							return {
 								id: `starship-${starshipId}`,
 								data: { label: starshipImage },
-								position: { x: 100 * (index + 1), y: 300 },
+								position: { x: 200 * (index + 1), y: 430 },
 								style: { width: 'fit-content' },
 							};
 						}
@@ -175,10 +169,11 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 					maskColor={'#bebebe'}
 					nodeStrokeColor={'#ece7e1'}
 					nodeColor={'#373737'}
+					nodeBorderRadius={14}
 					pannable
 					zoomable
 				/>
-				<Controls />
+				<Controls showFitView />
 			</ReactFlow>
 		</article>
 	);
