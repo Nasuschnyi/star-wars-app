@@ -9,7 +9,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
-		gap: clamp(1.5rem, 3vw, 3rem);
+		gap: clamp(0.625rem, 3vw, 3rem);
 		padding: 0 0 1rem;
 	}
 
@@ -39,9 +39,9 @@
 		bottom: 0;
 		left: 0;
 		width: 100%;
-		padding: 0.5rem 0 0.5rem 0.5rem;
+		padding: 0.5rem;
 		font-family: 'Montserrat', sans-serif;
-		font-size: clamp(1rem, 2vw, 1.25rem);
+		font-size: clamp(1rem, 2vw, 1.125rem);
 		line-height: 1.1;
 		color: map-get($color, 'platinum');
 		background: linear-gradient(
@@ -64,6 +64,7 @@
 
 		&-image {
 			display: flex;
+			align-items: center;
 			gap: 1rem;
 		}
 

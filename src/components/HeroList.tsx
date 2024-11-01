@@ -67,8 +67,14 @@ const HeroList: React.FC = () => {
 	// Function to handle load more button click
 	const handleLoadMore = () => {
 		setPage((prevPage) => prevPage + 1); // Load more heroes by incrementing the page
+		// Use setTimeout to allow new content to load before scrolling
+		setTimeout(() => {
+			window.scrollTo({
+				top: document.documentElement.scrollHeight,
+				behavior: 'smooth', // Ensures smooth scrolling to the bottom
+			});
+		}, 500); // Adjust delay as needed to align with loading time
 	};
-
 	// Function to reset the selected hero
 	const resetSelectedHero = () => {
 		setSelectedHero(null);
