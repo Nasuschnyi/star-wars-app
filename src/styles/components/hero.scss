@@ -43,6 +43,7 @@
 		font-family: 'Montserrat', sans-serif;
 		font-size: clamp(1rem, 2vw, 1.25rem);
 		line-height: 1.1;
+		color: map-get($color, 'platinum');
 		background: linear-gradient(
 			to top,
 			map-get($color, 'eerie-black'),

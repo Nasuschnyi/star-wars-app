@@ -108,9 +108,7 @@ const HeroList: React.FC = () => {
 				</ul>
 			)}
 			{loading && <p className="loading">Loading more heroes...</p>}
-			{!hasMore && (
-				<p className="loading no-more">No more heroes to load</p>
-			)}
+			{!hasMore && <p className="loading">No more heroes to load</p>}
 
 			{/* Button to load more heroes */}
 			<button

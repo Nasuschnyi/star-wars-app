@@ -35,7 +35,7 @@ export const fetchHeroDetails = async (heroId: number) => {
 };
 
 // Fetch film data
-/* export const fetchFilm = async (filmId: number) => {
+export const fetchFilm = async (filmId: number) => {
 	try {
 		const response = await fetch(`${API_BASE_URL}/films/${filmId}`);
 		return await checkResponse(response, `Film ${filmId}`);
@@ -43,9 +43,9 @@ export const fetchHeroDetails = async (heroId: number) => {
 		console.error(`Error fetching film with ID ${filmId}:`, error);
 		throw error;
 	}
-}; */
+};
 
-export async function fetchFilm(id: number) {
+/* export async function fetchFilm(id: number) {
 	try {
 		const response = await fetch(`https://swapi.dev/api/films/${id}`);
 		const data = await response.json();
@@ -54,7 +54,7 @@ export async function fetchFilm(id: number) {
 		console.error(`Error fetching film with ID ${id}:`, error);
 		throw error;
 	}
-}
+} */
 
 // Fetch starship data
 export const fetchStarship = async (starshipId: number) => {
