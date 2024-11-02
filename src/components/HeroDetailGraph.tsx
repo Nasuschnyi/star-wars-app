@@ -133,6 +133,8 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 												alt={starship.name}
 												width={120}
 												height={165}
+												priority
+												unoptimized
 												onError={({
 													currentTarget,
 												}) => {
