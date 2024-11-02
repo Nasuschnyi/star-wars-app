@@ -92,3 +92,15 @@
 		white-space: pre-wrap;
 	}
 }
+
+.tooltip {
+	position: fixed;
+	background: rgba(0, 0, 0, 0.8);
+	color: #fff;
+	padding: 8px;
+	border-radius: 0.875rem;
+	width: 200px;
+	pointer-events: none;
+	transform: translate(-50%, -100%);
+	z-index: 1000;
+}
