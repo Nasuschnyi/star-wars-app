@@ -1,5 +1,6 @@
 @import './fonts';
 @import './variables';
+@import './animations';
 
 :root {
 	--background: map-get($color, 'platinum');
@@ -54,3 +55,4 @@ ul li {
 @import './components/UI/title';
 @import './components/UI/loading';
 @import './components/UI/btn';
+@import './components/UI/copyright';

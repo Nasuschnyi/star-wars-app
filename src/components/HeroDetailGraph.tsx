@@ -1,5 +1,3 @@
-// Full component with improvements for hover and image loading issues
-
 'use client';
 import { useEffect, useState } from 'react';
 import ReactFlow, { MiniMap, Controls, Node, Edge } from 'reactflow';
@@ -71,7 +69,11 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 					id: `hero-${hero.id}`,
 					data: { label: heroImage }, // Assign the heroImage here
 					position: { x: 0, y: 0 },
-					style: { whiteSpace: 'pre-wrap', width: 'fit-content' },
+					style: {
+						borderRadius: '0.5rem',
+						width: 'fit-content',
+						background: '#ece7e1',
+					},
 				};
 				// Create film nodes
 				const filmNodes: Node[] = await Promise.all(
@@ -108,7 +110,10 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 								),
 							},
 							position: { x: 200 * (index + 0.5), y: 200 },
-							style: { width: 'fit-content' },
+							style: {
+								borderRadius: '0.5rem',
+								background: '#ece7e1',
+							},
 						};
 					})
 				);
@@ -151,7 +156,10 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 									),
 								},
 								position: { x: 200 * (index + 1), y: 430 },
-								style: { width: 'fit-content' },
+								style: {
+									borderRadius: '0.5rem',
+									background: '#ece7e1',
+								},
 							};
 						}
 					)
@@ -196,7 +204,6 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 			<ReactFlow
 				nodes={nodes}
 				edges={edges}
-				style={{ cursor: 'grab' }}
 			>
 				<MiniMap
 					maskColor={'#bebebe'}
@@ -205,6 +212,7 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 					nodeBorderRadius={14}
 					pannable
 					zoomable
+					style={{ cursor: 'grab' }}
 				/>
 				<Controls showFitView />
 			</ReactFlow>
@@ -215,7 +223,7 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 					style={{ top: tooltipPosition.y, left: tooltipPosition.x }}
 				>
 					{hoveredItem.hasOwnProperty('title') ? (
-						<ul>
+						<ul className="tooltip-list">
 							<h3>{(hoveredItem as Film).title}</h3>
 							<li>
 								<strong>Episode:</strong>{' '}
@@ -231,7 +239,7 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 							</li>
 						</ul>
 					) : (
-						<ul>
+						<ul className="tooltip-list">
 							<h3>{(hoveredItem as Starship).name}</h3>
 							<li>
 								<strong>Model:</strong>{' '}

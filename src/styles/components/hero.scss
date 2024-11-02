@@ -3,13 +3,12 @@
 .hero {
 	width: min(100% - 1rem, 100rem);
 	margin-inline: auto;
-	padding: 0 0 1.5rem;
 
 	&-list {
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
-		gap: clamp(0.625rem, 3vw, 3rem);
+		gap: clamp(0.625rem, 4vw, 3rem);
 		padding: 0 0 1rem;
 	}
 
@@ -17,6 +16,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		animation: pop-in 0.5s ease-in-out;
 	}
 
 	&-figure {
@@ -73,6 +73,7 @@
 			flex-direction: column;
 			align-items: flex-start;
 			gap: 0.25rem;
+			font-size: 0.875rem;
 
 			& strong {
 				font-weight: 600;
@@ -95,12 +96,18 @@
 
 .tooltip {
 	position: fixed;
-	background: rgba(0, 0, 0, 0.8);
-	color: #fff;
-	padding: 8px;
+	background: rgba(map-get($color, 'eerie-black'), 0.9);
+	color: map-get($color, 'platinum');
+	padding: 1rem;
 	border-radius: 0.875rem;
-	width: 200px;
+	max-width: 12.5rem;
 	pointer-events: none;
 	transform: translate(-50%, -100%);
 	z-index: 1000;
+
+	&-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
 }

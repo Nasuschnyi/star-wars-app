@@ -4,6 +4,7 @@ import HeroDetailGraph from './HeroDetailGraph';
 import { fetchHeroes } from '../services/starWarsApi';
 import Image from 'next/image';
 import { Hero } from '@/types/starWarsTypes';
+import Copyright from './UI/Copyright';
 
 // Define the HeroList component
 const HeroList: React.FC = () => {
@@ -137,6 +138,7 @@ const HeroList: React.FC = () => {
 					<HeroDetailGraph heroId={selectedHero.id} />
 				</section>
 			)}
+			<Copyright />
 		</main>
 	);
 };
