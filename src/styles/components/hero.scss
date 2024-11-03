@@ -59,7 +59,7 @@
 
 		&-graph {
 			height: 100%;
-			padding: 2rem;
+			padding: clamp(0rem, 2vw, 3rem);
 		}
 
 		&-image {
