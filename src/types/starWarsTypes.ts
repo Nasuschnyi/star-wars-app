@@ -77,3 +77,19 @@ export interface Starship {
 	edited: string;
 	url: string;
 }
+
+// Define the structure of Vehicles
+export interface Vehicle {
+	id: number;
+	name: string;
+	model: string;
+	vehicle_class: string;
+	manufacturer: string;
+	length: string;
+	cost_in_credits: string;
+	crew: string;
+	passengers: string;
+	max_atmosphering_speed: string;
+	cargo_capacity: string;
+	consumables: string;
+}

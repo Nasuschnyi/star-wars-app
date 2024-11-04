@@ -7,8 +7,9 @@ import {
 	fetchHeroDetails,
 	fetchFilm,
 	fetchStarship,
+	fetchVehicle,
 } from '../services/starWarsApi';
-import { Film, Starship } from '@/types/starWarsTypes';
+import { Film, Starship, Vehicle } from '@/types/starWarsTypes';
 
 // Define the props for the HeroDetailGraph component
 interface HeroDetailGraphProps {
@@ -19,9 +20,10 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 	// Initialize state for nodes and edges
 	const [nodes, setNodes] = useState<Node[]>([]);
 	const [edges, setEdges] = useState<Edge[]>([]);
-	const [hoveredItem, setHoveredItem] = useState<Film | Starship | null>(
-		null
-	);
+	const [hoveredItem, setHoveredItem] = useState<
+		Film | Starship | Vehicle | null
+	>(null);
+
 	const [tooltipPosition, setTooltipPosition] = useState<{
 		x: number;
 		y: number;
@@ -164,13 +166,61 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 						}
 					)
 				);
-				// Create edges
+				// Create vehicle nodes
+				const vehicleNodes: Node[] = await Promise.all(
+					hero.vehicles.map(
+						async (vehicleId: number, index: number) => {
+							const vehicle = await fetchVehicle(vehicleId);
+							return {
+								id: `vehicle-${vehicleId}`,
+								data: {
+									label: (
+										<figure
+											className="hero-details-image content"
+											onMouseEnter={(e) =>
+												handleHover(vehicle, e)
+											}
+											onMouseLeave={clearTooltip}
+										>
+											<Image
+												src={`https://starwars-visualguide.com/assets/img/vehicles/${vehicleId}.jpg`}
+												alt={vehicle.name}
+												width={120}
+												height={165}
+												priority
+												unoptimized
+												onError={({
+													currentTarget,
+												}) => {
+													currentTarget.onerror =
+														null;
+													currentTarget.src =
+														'https://starwars-visualguide.com/assets/img/big-placeholder.jpg';
+												}}
+											/>
+											<figcaption className="content-caption">
+												{vehicle.name}
+											</figcaption>
+										</figure>
+									),
+								},
+								position: { x: 300 * (index + 1), y: 660 },
+								style: {
+									borderRadius: '0.5rem',
+									background: '#ece7e1',
+								},
+							};
+						}
+					)
+				);
+
+				// Create film edges
 				const filmEdges: Edge[] = hero.films.map((filmId: number) => ({
 					id: `edge-hero-${hero.id}-film-${filmId}`,
 					source: `hero-${hero.id}`,
 					target: `film-${filmId}`,
 				}));
-
+				// Create starship edges
 				const starshipEdges: Edge[] = hero.starships.map(
 					(starshipId: number) => ({
 						id: `edge-hero-${hero.id}-starship-${starshipId}`,
@@ -178,9 +228,22 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 						target: `starship-${starshipId}`,
 					})
 				);
+				// Create vehicle edges
+				const vehicleEdges: Edge[] = hero.vehicles.map(
+					(vehicleId: number) => ({
+						id: `edge-hero-${hero.id}-vehicle-${vehicleId}`,
+						source: `hero-${hero.id}`,
+						target: `vehicle-${vehicleId}`,
+					})
+				);
 				// Set nodes and edges
-				setNodes([heroNode, ...filmNodes, ...starshipNodes]);
-				setEdges([...filmEdges, ...starshipEdges]);
+				setNodes([
+					heroNode,
+					...filmNodes,
+					...starshipNodes,
+					...vehicleNodes,
+				]);
+				setEdges([...filmEdges, ...starshipEdges, ...vehicleEdges]);
 			} catch (error) {
 				console.error('Error fetching hero details:', error);
 			}
@@ -189,7 +252,10 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 		fetchData();
 	}, [heroId]);
 
-	const handleHover = (item: Film | Starship, event: React.MouseEvent) => {
+	const handleHover = (
+		item: Film | Starship | Vehicle,
+		event: React.MouseEvent
+	) => {
 		setHoveredItem(item);
 		setTooltipPosition({ x: event.clientX, y: event.clientY });
 	};
@@ -223,7 +289,9 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 					style={{ top: tooltipPosition.y, left: tooltipPosition.x }}
 				>
 					{hoveredItem.hasOwnProperty('title') ? (
+						// Render Film details
 						<ul className="tooltip-list">
+							<strong>Film:</strong>{' '}
 							<h3>{(hoveredItem as Film).title}</h3>
 							<li>
 								<strong>Episode:</strong>{' '}
@@ -238,8 +306,10 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 								{(hoveredItem as Film).release_date}
 							</li>
 						</ul>
-					) : (
+					) : hoveredItem.hasOwnProperty('starship_class') ? (
+						// Render Starship details
 						<ul className="tooltip-list">
+							<strong>Starship:</strong>{' '}
 							<h3>{(hoveredItem as Starship).name}</h3>
 							<li>
 								<strong>Model:</strong>{' '}
@@ -254,7 +324,40 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 								{(hoveredItem as Starship).cost_in_credits}
 							</li>
 						</ul>
-					)}
+					) : hoveredItem.hasOwnProperty('vehicle_class') ? (
+						// Render Vehicle details
+						<ul className="tooltip-list">
+							<strong>Vehicle:</strong>{' '}
+							<h3>{(hoveredItem as Vehicle).name}</h3>
+							<li>
+								<strong>Model:</strong>{' '}
+								{(hoveredItem as Vehicle).model}
+							</li>
+							<li>
+								<strong>Manufacturer:</strong>{' '}
+								{(hoveredItem as Vehicle).manufacturer}
+							</li>
+							<li>
+								<strong>Class:</strong>{' '}
+								{(hoveredItem as Vehicle).vehicle_class}
+							</li>
+							<li>
+								<strong>Max Speed:</strong>{' '}
+								{
+									(hoveredItem as Vehicle)
+										.max_atmosphering_speed
+								}
+							</li>
+							<li>
+								<strong>Crew:</strong>{' '}
+								{(hoveredItem as Vehicle).crew}
+							</li>
+							<li>
+								<strong>Passengers:</strong>{' '}
+								{(hoveredItem as Vehicle).passengers}
+							</li>
+						</ul>
+					) : null}
 				</article>
 			)}
 		</article>

@@ -85,13 +85,9 @@
 
 .content {
 	flex-direction: column;
-	gap: 0.5rem;
-
-	&-caption {
-		font-size: 0.625rem;
-		font-weight: 600;
-		white-space: pre-wrap;
-	}
+	gap: 0.25rem;
+	font-size: 0.875rem;
+	font-weight: 600;
 }
 
 .tooltip {
