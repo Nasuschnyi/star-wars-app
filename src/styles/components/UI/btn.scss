@@ -9,18 +9,17 @@
 	line-height: 2;
 	text-transform: uppercase;
 	margin: 0 auto;
-	cursor: pointer;
 	@extend %transition;
+}
 
-	&.reset {
-		position: fixed;
-		top: 2rem;
-		right: 2rem;
-		font-size: 1rem;
-		z-index: 1000;
+.reset {
+	position: fixed;
+	top: 2rem;
+	right: 2rem;
+	font-size: 1rem;
+	z-index: 1000;
 
-		&:hover {
-			color: map-get($color, 'candy-apple-red');
-		}
+	&:hover {
+		color: map-get($color, 'candy-apple-red');
 	}
 }

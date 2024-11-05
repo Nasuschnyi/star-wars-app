@@ -18,16 +18,16 @@ interface HeroDetailGraphProps {
 // Component to render hero details in a graph using React Flow
 const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 	// Initialize state for nodes and edges
-	const [nodes, setNodes] = useState<Node[]>([]);
-	const [edges, setEdges] = useState<Edge[]>([]);
+	const [nodes, setNodes] = useState<Node[]>([]); // State to store nodes
+	const [edges, setEdges] = useState<Edge[]>([]); // State to store edges
 	const [hoveredItem, setHoveredItem] = useState<
 		Film | Starship | Vehicle | null
-	>(null);
+	>(null); // State to store hovered item
 
 	const [tooltipPosition, setTooltipPosition] = useState<{
 		x: number;
 		y: number;
-	} | null>(null);
+	} | null>(null); // State to store tooltip position
 
 	// Fetch data when the component mounts or the heroId changes
 	useEffect(() => {
@@ -66,7 +66,7 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 						</ul>
 					</figure>
 				);
-
+				// Create hero node
 				const heroNode: Node = {
 					id: `hero-${hero.id}`,
 					data: { label: heroImage }, // Assign the heroImage here
