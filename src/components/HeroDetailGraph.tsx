@@ -126,6 +126,7 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 							style: {
 								borderRadius: '0.5rem',
 								background: '#ece7e1',
+								cursor: 'default',
 							},
 						};
 					})
@@ -172,6 +173,7 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 								style: {
 									borderRadius: '0.5rem',
 									background: '#ece7e1',
+									cursor: 'default',
 								},
 							};
 						}
@@ -219,6 +221,7 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 								style: {
 									borderRadius: '0.5rem',
 									background: '#ece7e1',
+									cursor: 'default',
 								},
 							};
 						}
@@ -292,7 +295,7 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 				style={{
 					opacity: isInitialized ? 1 : 0,
 					height: '100%',
-					transition: 'opacity 0.5s ease-in-out',
+					transition: 'opacity 0.3s ease-in-out',
 				}}
 			>
 				<ReactFlow
@@ -310,7 +313,7 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 						nodeBorderRadius={14}
 						pannable
 						zoomable
-						style={{ cursor: 'grab' }}
+						style={{ cursor: 'crosshair' }}
 					/>
 					<Controls
 						showFitView
