@@ -5,4 +5,12 @@
 	font-size: clamp(1rem, 2vw, 1.5rem);
 	opacity: 0.7;
 	line-height: 2;
+
+	&.center {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		font-size: 5vw;
+	}
 }

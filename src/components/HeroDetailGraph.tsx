@@ -1,6 +1,12 @@
 'use client';
-import { useEffect, useState } from 'react';
-import ReactFlow, { MiniMap, Controls, Node, Edge } from 'reactflow';
+import { useEffect, useRef, useState } from 'react';
+import ReactFlow, {
+	MiniMap,
+	Controls,
+	Node,
+	Edge,
+	ReactFlowInstance,
+} from 'reactflow';
 import 'reactflow/dist/style.css';
 import Image from 'next/image';
 import {
@@ -18,21 +24,26 @@ interface HeroDetailGraphProps {
 // Component to render hero details in a graph using React Flow
 const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 	// Initialize state for nodes and edges
-	const [nodes, setNodes] = useState<Node[]>([]); // State to store nodes
-	const [edges, setEdges] = useState<Edge[]>([]); // State to store edges
+	const [nodes, setNodes] = useState<Node[]>([]); // State to manage nodes
+	const [edges, setEdges] = useState<Edge[]>([]); // State to manage edges
 	const [hoveredItem, setHoveredItem] = useState<
 		Film | Starship | Vehicle | null
-	>(null); // State to store hovered item
+	>(null); // State to manage the hovered item
 
 	const [tooltipPosition, setTooltipPosition] = useState<{
 		x: number;
 		y: number;
-	} | null>(null); // State to store tooltip position
+	} | null>(null); // State to manage the position of the tooltip
+	const [loading, setLoading] = useState(true); // State to manage loading status
+	const [isInitialized, setIsInitialized] = useState(false); // State to track if the graph has been initialized
+	const reactFlowInstance = useRef<ReactFlowInstance | null>(null); // Reference to the ReactFlow instance
 
 	// Fetch data when the component mounts or the heroId changes
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
+				// Set loading status to true
+				setLoading(true);
 				// Fetch hero details based on heroId
 				const hero = await fetchHeroDetails(heroId);
 				if (!hero) throw new Error('Hero not found');
@@ -66,7 +77,7 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 						</ul>
 					</figure>
 				);
-				// Create hero node
+
 				const heroNode: Node = {
 					id: `hero-${hero.id}`,
 					data: { label: heroImage }, // Assign the heroImage here
@@ -244,8 +255,13 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 					...vehicleNodes,
 				]);
 				setEdges([...filmEdges, ...starshipEdges, ...vehicleEdges]);
+				// Set loading status to false
+				setLoading(false);
+				// Allow ReactFlow to adjust offscreen, then show it
+				setTimeout(() => setIsInitialized(true), 50);
 			} catch (error) {
 				console.error('Error fetching hero details:', error);
+				setLoading(false); // Set loading status to false in case of error
 			}
 		};
 
@@ -265,23 +281,43 @@ const HeroDetailGraph: React.FC<HeroDetailGraphProps> = ({ heroId }) => {
 		setTooltipPosition(null);
 	};
 
-	return (
+	return loading ? (
+		<p className="loading center">Loading...</p>
+	) : (
 		<article className="hero-details-graph">
-			<ReactFlow
-				nodes={nodes}
-				edges={edges}
+			<figure
+				className={`reactflow-container ${
+					isInitialized ? 'visible' : ''
+				}`}
+				style={{
+					opacity: isInitialized ? 1 : 0,
+					height: '100%',
+					transition: 'opacity 0.5s ease-in-out',
+				}}
 			>
-				<MiniMap
-					maskColor={'#bebebe'}
-					nodeStrokeColor={'#ece7e1'}
-					nodeColor={'#373737'}
-					nodeBorderRadius={14}
-					pannable
-					zoomable
-					style={{ cursor: 'grab' }}
-				/>
-				<Controls showFitView />
-			</ReactFlow>
+				<ReactFlow
+					nodes={nodes}
+					edges={edges}
+					onInit={(instance) => {
+						reactFlowInstance.current = instance;
+						instance.fitView(); // Immediately fit view when initialized
+					}}
+				>
+					<MiniMap
+						maskColor={'#bebebe'}
+						nodeStrokeColor={'#ece7e1'}
+						nodeColor={'#373737'}
+						nodeBorderRadius={14}
+						pannable
+						zoomable
+						style={{ cursor: 'grab' }}
+					/>
+					<Controls
+						showFitView
+						onFitView={() => reactFlowInstance.current?.fitView()}
+					/>
+				</ReactFlow>
+			</figure>
 
 			{hoveredItem && tooltipPosition && (
 				<article
